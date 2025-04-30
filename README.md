@@ -58,3 +58,26 @@ Follow these steps to get the project running:
     # Build the project (e.g., using Maven)
     ./mvnw clean
     ```
+## Usage
+
+Once the Kafka cluster, Kafka UI, and the Spring Boot listener application are running:
+
+1.  **Access Kafka UI:**
+    Open your web browser and navigate to:
+    [http://localhost:8088](http://localhost:8088)
+
+2.  **Explore:**
+    Use Kafka UI to:
+    * View the Kafka cluster configuration.
+    * Create or inspect topics.
+    * Observe consumer groups (including the one used by the Spring Boot listener).
+    * Produce and consume messages manually if needed.
+
+## Technology Stack
+
+* Spring Boot / Spring Kafka
+* Apache Kafka (running in KRaft mode via Docker)
+* Kafka UI (Provectus)
+* Docker & Docker Compose
+* Java
+* Maven (or Gradle, depending on the project setup)
