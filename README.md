@@ -24,7 +24,7 @@ Follow these steps to get the project running:
 1.  **Clone the repository:**
 
     ```bash
-    git clone <your-repository-url> # Replace <your-repository-url> with the actual URL
+    git clone https://github.com/prathmeshthorat/simple-kafka-listener.git
     cd simple-kafka-listener
     ```
 
