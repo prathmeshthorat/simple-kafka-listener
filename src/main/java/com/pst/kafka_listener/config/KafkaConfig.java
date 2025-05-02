@@ -10,36 +10,44 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.support.serializer.JsonDeserializer;
 
-import com.fasterxml.jackson.databind.deser.std.StringDeserializer;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import com.pst.kafka_listener.model.NotificationRequest;
 
 @EnableKafka
 @Configuration
 public class KafkaConfig {
 
     @Bean
-    public ConsumerFactory<String, String> consumerFactory() {
-
-        // Creating a Map of string-object pairs
-        Map<String, Object> config = new HashMap<>();
-
-        // Adding the Configuration
-        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
-                "127.0.0.1:9092");
-
-        config.put(
+    public ConsumerFactory<String, NotificationRequest> consumerFactory() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(
+                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
+                "localhost:9092");
+        props.put(
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
                 StringDeserializer.class);
-        config.put(
+        props.put(
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-                StringDeserializer.class);
+                JsonDeserializer.class);
 
-        return new DefaultKafkaConsumerFactory<>(config);
+        // Configure the JsonDeserializer to trust the package containing
+        // NotificationRequest
+        props.put(JsonDeserializer.TRUSTED_PACKAGES, "com.pst.kafka_listener.model");
+        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "com.pst.kafka_listener.model.NotificationRequest");
+
+        return new DefaultKafkaConsumerFactory<>(
+                props,
+                new StringDeserializer(),
+                new JsonDeserializer<>(NotificationRequest.class));
     }
 
     // Creating a Listener
-    public ConcurrentKafkaListenerContainerFactory concurrentKafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, NotificationRequest> kafkaListenerContainerFactory() {
+
+        ConcurrentKafkaListenerContainerFactory<String, NotificationRequest> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         return factory;
     }
